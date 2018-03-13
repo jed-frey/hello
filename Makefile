@@ -4,11 +4,18 @@ CPP?=
 BUILD_DIR=$(notdir ${CC})
 
 C=$(wildcard *.c)
-OBJ=$(patsubst %.c,${BUILD_DIR}/%.o,${C})
+CPP=$(wildcard *.cpp)
+
+OBJ_C=$(patsubst %.c,${BUILD_DIR}/%.o,${C})
+OBJ_CPP=$(patsubst %.c,${BUILD_DIR}/%.o,${CPP})
+
+CFLAGS+=-Wall
+CXXFLAGS+=-Wall
 
 .PHONY: debug
 debug:
-	$(info $${CC}=${CC})
+	$(info $${CC}=${CC} ${CFLAGS})
+	$(info $${CXX}=${CXX} ${CXXFLAGS})
 	$(info $${C}=${C})
 	$(info $${OBJ}=${OBJ})
 	$(info $${BUILD_DIR}=${BUILD_DIR})
@@ -17,13 +24,23 @@ debug:
 obj: ${OBJ}
 
 .PHONY: hello
-hello: hello_${CC}
+hello:	hello_c_${CC} hello_cpp_${CXX}
 
-hello_${CC}: ${OBJ}
-	${CC} -o ${@} ${OBJ}
+hello_c_${CC}: ${OBJ_C}
+	${CC} ${CFLAGS} -o ${@} ${^}
+
+hello_cpp_${CXX}: ${OBJ_CPP}
+	${CXX} ${CXXLAGS} -o ${@} ${^}
 
 ${BUILD_DIR}/%.o: %.c ${BUILD_DIR}
-	${CC} -Wall -c ${<} -o ${@}
+	${CC} ${CFLAGS} -c ${<} -o ${@}
+
+${BUILD_DIR}/%.o: %.cpp ${BUILD_DIR}
+	${CXX} ${CXXLAGS} -c ${<} -o ${@}
 
 ${BUILD_DIR}:
 	mkdir -p ${@}
+
+.PHONY: clean
+clean:
+	git clean -xfd
