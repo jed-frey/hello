@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 
-TARGET=debug
+TARGET=hello
 
-for v in 4.0 5.0 6.0 7
+for CLANG_VERSION in 4.0 5.0 6.0 7
 do
-	export CC=clang-$v
-	export CXX=clang-cpp-$v
+	export CC=clang-${CLANG_VERSION}
 	make ${TARGET}
 done
 
 
-for v in 4.8 5 6 7 8
+for GCC_VERSION in 4.8 5 6 7 8
 do
-	export CC=gcc-$v
-	export CXX=g++-$v
+	export CC=gcc-${GCC_VERSION}
 	make ${TARGET}
 done
